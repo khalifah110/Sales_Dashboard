@@ -108,7 +108,7 @@ DIVIDE(
 
 <img width="1271" height="660" alt="Screenshot 2026-01-22 111913" src="https://github.com/user-attachments/assets/23085974-a67c-4470-9a57-94721c5b29f0" />
 
-## We finaaly Automated the dashboard.
+#### The dashboard was fully automated with scheduled refreshes, enabling stakeholders to access up-to-date insights without manual intervention.
 
 
 ## 🔍 Key Business Insight
