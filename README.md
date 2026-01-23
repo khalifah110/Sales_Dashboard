@@ -12,24 +12,75 @@
 
 
 
+# 🧮 DAX Measures & Calculations
 
-## 🧮 DAX Measures & Calculations
+The following DAX measures were created to analyze returns, sales, profit, and year-over-year (YoY) performance (*Time Interlligence Calculation*):
 
-To drive the visualizations in this dashboard, the following DAX measures were created to aggregate the raw customer data:
-
-| Metric | DAX Formula | Description |
-| :--- | :--- | :--- |
-| *Total Customers* | Number of customer = COUNT('public customer_data'[customer_id]) | Calculates the total count of unique customer IDs. |
-| *Average Purchase* | Average Purchse Amount = AVERAGE('public customer_data'[purchase_amount]) | Calculates the mean value of all transactions. |
-| *Average Rating* | Average Review Rating = AVERAGE('public customer_data'[review_rating]) | Calculates the mean satisfaction score across all reviews. |
+| Measure Name | DAX Formula | Description |
+|-------------|------------|-------------|
+| **% Returned Orders** | `DIVIDE(DISTINCTCOUNT('Return'[Order ID]), DISTINCTCOUNT(Orders[Order ID]))` | Calculates the percentage of total orders that were returned. |
+| **Total Profit** | `SUM(Orders[Profit])` | Calculates total profit across all orders. |
+| **Total Sales** | `SUM(Orders[Sales])` | Calculates total sales revenue. |
+| **% Returned Orders PY** | `CALCULATE([% Returned Orders], SAMEPERIODLASTYEAR('Data Table'[Date]))` | Computes the percentage of returned orders in the previous year. |
+| **Profit PY** | `CALCULATE([Total Profit], SAMEPERIODLASTYEAR('Data Table'[Date]))` | Calculates total profit for the previous year. |
+| **Sales PY** | `CALCULATE([Total Sales], SAMEPERIODLASTYEAR('Data Table'[Date]))` | Calculates total sales for the previous year. |
+| **YoY Change – Returned Orders %** | `[% Returned Orders] - [% Returned Orders PY]` | Measures year-over-year change in the return rate. |
+| **YoY Change – Profit %** | `DIVIDE([Total Profit] - [Profit PY], [Profit PY])` | Calculates year-over-year profit growth rate. |
+| **YoY Change – Sales %** | `DIVIDE([Total Sales] - [Sales PY], [Sales PY])` | Calculates year-over-year sales growth rate. |
 
 ### Measures Snippet
 ```dax
-// Total Number of Customers
-Number of customer = COUNT('public customer_data'[customer_id])
+// Percentage of Returned Orders
+% Returned Orders =
+VAR _total_orders = DISTINCTCOUNT(Orders[Order ID])
+VAR _returned_orders = DISTINCTCOUNT('Return'[Order ID])
+RETURN
+DIVIDE(_returned_orders, _total_orders)
 
-// Average Purchase Value
-Average Purchse Amount = AVERAGE('public customer_data'[purchase_amount])
+// Total Profit
+Total Profit =
+SUM(Orders[Profit])
 
-// Average Customer Satisfaction
-Average Review Rating = AVERAGE('public customer_data'[review_rating])
+// Total Sales
+Total Sales =
+SUM(Orders[Sales])
+
+// Previous Year Returned Orders %
+% Returned Orders PY =
+CALCULATE(
+    [% Returned Orders],
+    SAMEPERIODLASTYEAR('Data Table'[Date])
+)
+
+// Previous Year Profit
+Profit PY =
+CALCULATE(
+    [Total Profit],
+    SAMEPERIODLASTYEAR('Data Table'[Date])
+)
+
+// Previous Year Sales
+Sales PY =
+CALCULATE(
+    [Total Sales],
+    SAMEPERIODLASTYEAR('Data Table'[Date])
+)
+
+// YoY Change in Returned Orders %
+YoY Change – Returned Orders % =
+[% Returned Orders] - [% Returned Orders PY]
+
+// YoY Profit Growth
+YoY Change – Profit % =
+DIVIDE(
+    [Total Profit] - [Profit PY],
+    [Profit PY]
+)
+
+// YoY Sales Growth
+YoY Change – Sales % =
+DIVIDE(
+    [Total Sales] - [Sales PY],
+    [Sales PY]
+)
+```
